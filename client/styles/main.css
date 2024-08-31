@@ -1,0 +1,57 @@
+.trip {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+
+    &>img {
+        width: 400px;
+        object-fit: cover;
+        height: 200px;
+    }
+
+    .icon {
+        height: 20px;
+    }
+
+    h3 {
+        font-weight: bold;
+        font-size: 20px;
+        line-height: 28px;
+    }
+}
+
+header {
+    margin: 50px;
+    font-size: 48px;
+}
+
+@media screen and (max-width: 400px) {
+    .trip {
+        flex-direction: column;
+
+        img {
+            width: 100%
+        }
+    }
+}
+
+#addTrip {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    min-height: 200px;
+    padding: 30px;
+    justify-content: center;
+    flex-direction: column;
+
+    form:not(.hidden)+#showForm {
+        display: none;
+    }
+}
+
+.hidden {
+    display: none;
+}

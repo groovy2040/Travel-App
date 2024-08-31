@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Travel Planner</h1>
+    </header>
+
+    <main>
+        <section id="trips" class="container">
+
+        </section>
+        <section id="addTrip" >
+
+            <form class="hidden">
+                <div>
+                    <label for="city">Destination</label>
+                    <input type="text" id="city" name="city" placeholder="Enter city" required>
+                </div>
+                <div>
+                    <label for="start">Start of trip</label>
+                    <input id="start" type="date" name="start" required />
+                </div>
+                <div>
+                    <label for="end">End of trip</label>
+                    <input id="end" type="date" name="end" required />
+                </div>
+                <button id="submitButton" type="submit">Submit</button>
+            </form>
+            <button id="showForm">add trip</button>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>This is a footer</p>
+    </footer>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker
+                    .register("/service-worker.js")
+                    .then((registration) => {
+                        console.log("ServiceWorker registered with scope:", registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log("ServiceWorker registration failed:", error);
+                    });
+            });
+        }
+    </script>
+
+</body>
+
+</html>
