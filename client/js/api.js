@@ -15,3 +15,8 @@ export async function sendToServer(payload) {
 export async function getTrips() {
     return fetch(`${serverURL}/trips`).then((res) => res.json());
 }
+export async function deleteTrip(id) {
+    return fetch(`${serverURL}/trips/${id}`,{
+        method:"DELETE"
+    }).then((res) => res.json());
+}

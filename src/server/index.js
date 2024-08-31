@@ -46,6 +46,13 @@ function dateFormatter(date = new Date()) {//=>YYYY-MM-DD
 app.get('/api/trips', (req, res) => {
   res.status(200).json(trips)
 })
+app.delete('/api/trips/:id', (req,res)=>{
+  const id = Number(req.params.id)
+  const indexToDelete = trips.findIndex(trip=>trip.id === id );
+  trips.splice(indexToDelete,1)
+  res.status(204).json({message:`trip with id ${id} was successfully deleted`})
+})
+
 
 app.post("/api/location", async (req, res) => {
   const { city, start = dateFormatter(), end = dateFormatter() } = req.body
@@ -78,6 +85,7 @@ app.post("/api/location", async (req, res) => {
  
 
   const payload = {
+    id:trips.length+1,
     city, start, end,
     country: result.geonames[0].countryName,
     weather: weatherResult.data.filter(day => {
@@ -93,6 +101,15 @@ app.post("/api/location", async (req, res) => {
   res.status(422).json({ error: e, message: 'pixabay problem' })
 }
 });
+
+function generateid(){//1,3
+  if(trips.length == 0){
+    return 1
+  }else{
+    let lastTripId = trips.at(-1).id;
+    return lastTripId + 1//4
+  }
+}
 
 // Designates what port the app will listen to for incoming requests
 app.listen(8000, function () {
