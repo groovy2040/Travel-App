@@ -3,7 +3,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const fetch = require("node-fetch");
+const { generateid, dateFormatter } = require("./helpers.js")
 dotenv.config();
+const tripsData = require('./trips.json')
 
 const app = express();
 
@@ -21,39 +23,23 @@ const pixabayUrl = `https://pixabay.com/api/?key=${process.env.PIXABAY_KEY}&imag
 
 
 //http://api.geonames.org/searchJSON?q=london&maxRows=10&username=groovy2040
-const trips = []
+const trips = tripsData
 
 app.get("/", function (req, res) {
   //   res.sendFile(path.resolve(__dirname, "../client/views/index.html"));
   res.sendFile(path.resolve(__dirname, "dist/index.html"));
 });
 
-// POST Route
-
-function dateFormatter(date = new Date()) {//=>YYYY-MM-DD
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  if (month < 10) {
-    month = '0' + month
-  }
-  let day = date.getDate();
-  if (day < 10) {
-    day = '0' + day
-  }
-  return `${year}-${month}-${day}`
-}
-
 app.get('/api/trips', (req, res) => {
   res.status(200).json(trips)
 })
-app.delete('/api/trips/:id', (req,res)=>{
+app.delete('/api/trips/:id', (req, res) => {
   const id = Number(req.params.id)
-  const indexToDelete = trips.findIndex(trip=>trip.id === id );
-  trips.splice(indexToDelete,1)
-  res.status(204).json({message:`trip with id ${id} was successfully deleted`})
+  const indexToDelete = trips.findIndex(trip => trip.id === id);
+  trips.splice(indexToDelete, 1)
+  res.status(204).json({ message: `trip with id ${id} was successfully deleted` })
 })
-
-
+// POST Route
 app.post("/api/location", async (req, res) => {
   const { city, start = dateFormatter(), end = dateFormatter() } = req.body
   console.log(req.body);
@@ -82,34 +68,24 @@ app.post("/api/location", async (req, res) => {
     const pixabayResponse = await fetch(`${pixabayUrl}&q=${city}`)
     const pixabayResult = await pixabayResponse.json()
 
- 
 
-  const payload = {
-    id:trips.length+1,
-    city, start, end,
-    country: result.geonames[0].countryName,
-    weather: weatherResult.data.filter(day => {
-      let date = new Date(day.datetime)
-      return date >= start_date && date <= end_date
-    }),
-    imageUrl: pixabayResult.hits[0].webformatURL
+    const payload = {
+      id: generateid(trips),
+      city, start, end,
+      country: result.geonames[0].countryName,
+      weather: weatherResult.data.filter(day => {
+        let date = new Date(day.datetime)
+        return date >= start_date && date <= end_date
+      }),
+      imageUrl: pixabayResult.hits[0].webformatURL
+    }
+    trips.push(payload)
+    res.status(201).json(payload)
+
+  } catch (e) {
+    res.status(422).json({ error: e, message: 'pixabay problem' })
   }
-  trips.push(payload)
-  res.status(201).json(payload)
-
-} catch (e) {
-  res.status(422).json({ error: e, message: 'pixabay problem' })
-}
 });
-
-function generateid(){//1,3
-  if(trips.length == 0){
-    return 1
-  }else{
-    let lastTripId = trips.at(-1).id;
-    return lastTripId + 1//4
-  }
-}
 
 // Designates what port the app will listen to for incoming requests
 app.listen(8000, function () {

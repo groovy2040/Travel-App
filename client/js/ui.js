@@ -1,5 +1,6 @@
 import { deleteTrip } from './api';
 import { colors } from './constants'
+import * as renderWeatherDay from './renderWeatherDay';
 
 export function renderTrip(trip) {
   const { city, country, imageUrl, weather, start, end, id } = trip;
@@ -7,39 +8,33 @@ export function renderTrip(trip) {
   el.classList.add('trip')
   el.style.backgroundColor = colors[colors.length % id]
   const now = new Date();
-  const daysTillTrip = Math.floor((now.getTime() - new Date(start).getTime()) / 1000 * 60 * 60 * 24)
+  const diff = now.getTime() - new Date(start).getTime();
+
+  let daysTillTrip = "already started"
+  if(diff > 0){
+    Math.floor( diff/ 1000 * 60 * 60 * 24) + " days away";
+  }
+  console.log(now.getTime(),new Date(start).getTime())
   el.innerHTML = `
       <img src="${imageUrl}" alt="${country}" />
       <div>
         <h3> My trip to: ${city}, ${country}</h3>
         <h3> Departing: ${start}</h3>
   
-        <h5>${city}, ${country} is ${daysTillTrip} days away</h5>
+        <h5>${city}, ${country} is ${daysTillTrip}</h5>
         <h5>Typical weather for then is</h5>
   
         ${weather.map(renderWeatherDay).join('\n')}
-        <div>
-          <button>save trip</button>
-          <button class='remove'>remove trip</button>
+        <div class='row'>
+          <button class="cancel">remove trip</button>
         </div>
       </div> 
     `
   const tripsNode = document.querySelector('#trips')
   tripsNode.appendChild(el)
-  const removeTrip = el.querySelector('.remove')
+  const removeTrip = el.querySelector('.cancel')
   removeTrip.addEventListener('click', () => {
     deleteTrip(id)
     el.remove()
   })
-}
-
-export function renderWeatherDay(weather) {
-  const { datetime, max_temp, min_temp, weather: { description, icon } } = weather
-  return `
-      <h6>
-    ${datetime}, high: ${max_temp} low: ${min_temp}
-  ${description}
-  <img class='icon' src="https://cdn.weatherbit.io/static/img/icons/${icon}.png"
-      </h6>
-    `
 }

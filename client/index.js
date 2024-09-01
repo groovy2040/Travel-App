@@ -12,11 +12,15 @@ import "./styles/main.css";
 
 const form = document.querySelector("form");
 const showForm = document.querySelector('#showForm')
+const cancel = form.querySelector('#closeButton')
 
 if (form && showForm) {
     showForm.addEventListener('click', () => {
         form.classList.remove('hidden')
         form.addEventListener("submit", handleSubmit);
+        cancel.addEventListener('click',()=>{
+            form.classList.add('hidden')
+        })
     })
 }
 
