@@ -1,3 +1,8 @@
+ ## before you start
+ in case .env file is not provided
+ rename .env_template to .env and replace api keys, from endpoints where these keys can be generated
+ if you wont do this backend will signalise about problems while fetching corresponding apis
+ 
  ## in order to run test do 
  ```
  npm run test

@@ -19,6 +19,7 @@ export async function handleSubmit(event) {
   if (valid) {
     let result = await sendToServer(payload);
     renderTrip(result)
+    event.target.classList.add('hidden')
   } else {
     alert("Sorry url you provided is not valid");
   }

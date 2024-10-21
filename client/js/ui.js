@@ -24,7 +24,7 @@ export function renderTrip(trip) {
         <h5>${city}, ${country} is ${daysTillTrip}</h5>
         <h5>Typical weather for then is</h5>
   
-        ${weather.map(renderWeatherDay).join('\n')}
+        ${weather?.map(renderWeatherDay).join('\n')}
         <div class='row'>
           <button class="cancel">remove trip</button>
         </div>

@@ -23,7 +23,7 @@ const pixabayUrl = `https://pixabay.com/api/?key=${process.env.PIXABAY_KEY}&imag
 
 
 //http://api.geonames.org/searchJSON?q=london&maxRows=10&username=groovy2040
-const trips = tripsData
+const trips = []
 
 app.get("/", function (req, res) {
   //   res.sendFile(path.resolve(__dirname, "../client/views/index.html"));
@@ -48,6 +48,7 @@ app.post("/api/location", async (req, res) => {
       `${geoURL}&q=${city}`
     )
     const result = await response.json()
+    console.log({result})
     const { lng, lat } = result.geonames[0];
 
     let start_date = new Date(start)
@@ -64,6 +65,7 @@ app.post("/api/location", async (req, res) => {
 
     const weatherResponse = await fetch(`${weatherUrl}&lat=${lat}&lon=${lng}`)
     const weatherResult = await weatherResponse.json()
+    console.log({weatherResult})
 
     const pixabayResponse = await fetch(`${pixabayUrl}&q=${city}`)
     const pixabayResult = await pixabayResponse.json()
@@ -72,8 +74,8 @@ app.post("/api/location", async (req, res) => {
     const payload = {
       id: generateid(trips),
       city, start, end,
-      country: result.geonames[0].countryName,
-      weather: weatherResult.data.filter(day => {
+      country: result?.geonames?.[0]?.countryName,
+      weather: weatherResult?.data?.filter(day => {
         let date = new Date(day.datetime)
         return date >= start_date && date <= end_date
       }),
@@ -83,6 +85,7 @@ app.post("/api/location", async (req, res) => {
     res.status(201).json(payload)
 
   } catch (e) {
+    console.log(e)
     res.status(422).json({ error: e, message: 'pixabay problem' })
   }
 });
